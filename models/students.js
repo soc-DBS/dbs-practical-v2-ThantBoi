@@ -10,9 +10,12 @@ module.exports.retrieveAll = function retrieveAll() {
 
 module.exports.enrolNewStudent = function enrolNewStudent(adminNumber, studentName, gender, address, dob, nationality, courseCode) {
     const sql = 'CALL enrol_new_student($1, $2, $3, $4, $5, $6, $7)';
-    return query(sql, [adminNumber, studentName, gender, address, dob, nationality, courseCode])
+    return query(sql, [adminNumber, studentName, gender, address, dob, nationality, courseCode, ''])
         .then(function (result) {
-            console.log('Student enrolled');
+            console.log(result)
+            if (result.row.length==1 && result.rows[0].errMsg){
+                throw new RAISE_EXCEPTION(result.rows[0].errMsg)
+            }
         })
         .catch(function (error) {
             if (error.code === SQL_ERROR_CODE.UNIQUE_VIOLATION) {
